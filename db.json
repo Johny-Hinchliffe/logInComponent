@@ -1,0 +1,221 @@
+{
+	"tasks": [
+		{
+			"text": "dsdsd",
+			"day": "dsdsd",
+			"reminder": true,
+			"id": 1
+		},
+		{
+			"text": "sasas",
+			"day": "asasa",
+			"reminder": false,
+			"id": 2
+		}
+	],
+	"users": [
+		{
+			"email": "johny@hotmail.com",
+			"first_name": "johny",
+			"last_name": "hinchliffe",
+      "gender": "male",
+			"birthday": "12/03/1990",
+			"id": 1
+		},
+		{
+			"email": "brianna@hotmail.com",
+			"first_name": "brianna",
+			"last_name": "botelho",
+      "gender": "female",
+			"birthday": "27/07/1988",
+			"id": 2
+		},
+		{
+			"email": "richard@hotmail.com",
+			"first_name": "richard",
+			"last_name": "murray",
+      "gender": "male",
+			"birthday": "04/09/1992",
+			"id": 3
+		}
+	],
+	"connections": [
+		{
+			"user_one_id": 1,
+			"use_two_id": 2,
+			"id": 1
+		},
+		{
+			"user_id": 1,
+			"friend_id": 3,
+			"id": 2
+		},
+		{
+			"user_id": 1,
+			"friend_id": 2,
+			"id": 1
+		}
+	],
+  
+	"giftees": [
+		{
+			"first_name": "mum",
+			"last_name": "",
+			"birthday": "29/01/1965",
+      "budget": 30,
+      "relationship": "mother",
+      "christmas": true,
+			"user_id": 1,
+			"id": 1
+		},
+    {
+			"first_name": "james",
+			"last_name": "hinchliffe",
+			"birthday": "18/01/1988",
+      "budget": 20,
+      "relationship": "brother",
+      "christmas": true,
+			"user_id": 1,
+			"id": 2
+		},
+    {
+      "first_name": "kate",
+      "last_name": "",
+      "birthday": "18/09/1992",
+      "budget": 10,
+      "relationship": "friend",
+      "christmas": true,
+      "user_id": 2,
+      "id": 3
+    },
+    {
+			"first_name": "milky",
+			"last_name": "boy",
+			"birthday": "28/09/1994",
+      "budget": 5,
+      "relationship": "friend",
+      "christmas": false,
+			"user_id": 3,
+			"id": 4
+		}
+	],
+	"occasions": [
+		{
+			"user_id": 1,
+			"giftee_id": 1,
+			"id": 1,
+      "name": "mother's day",
+      "occasion": "03/12",
+      "budget": 10,
+      "repeat": true
+		},
+		{
+			"user_id": 1,
+			"giftee_id": 1,
+			"id": 2,
+      "name": "anniversary",
+      "occasion": "11/12/2006",
+      "budget": 15,
+      "repeat": true
+		},
+    {
+			"user_id": 2,
+			"giftee_id": 3,
+			"id": 3,
+      "name": "wedding",
+      "occasion": "11/01/2022",
+      "budget": 20,
+      "repeat": false
+		},
+    {
+			"user_id": 3,
+			"giftee_id": 4,
+			"id": 4,
+      "name": "christening",
+      "occasion": "12/29/2022",
+      "budget": 5,
+      "repeat": false
+		}
+	],
+  "gift_ideas": [
+		{
+			"user_id": 1,
+			"giftee_id": 1,
+			"id": 1,
+      "gift_name": "baseball cap",
+      "link": "www.amazon.com/12121",
+      "price": 30.99
+		},
+		{
+			"user_id": 1,
+			"giftee_id": 2,
+			"id": 2,
+      "gift_name": "funny mug",
+      "link": "www.argos.com/mug",
+      "price": 6.99
+		},
+    {
+			"user_id": 2,
+			"giftee_id": 3,
+			"id": 1,
+      "gift_name": "belt",
+      "link": "www.amazon.com/1aaa1",
+      "price": 9.98
+		},
+    {
+			"user_id": 3,
+			"giftee_id": 4,
+			"id": 4,
+      "gift_name": "milk bottle",
+      "link": "www.dairy.com/12121",
+      "price": 2.99
+		}
+  ],
+    "my_wishlist": [
+		{
+			"user_id": 1,
+			"id": 1,
+      "gift_name": "sausage maker",
+      "link": "www.amazon.com/12121",
+      "price": 30.99
+		},
+		{
+			"user_id": 1,
+			"id": 2,
+      "gift_name": "dancing cow",
+      "link": "www.argos.com/cow",
+      "price": 6.99
+		},
+    {
+			"user_id": 2,
+			"id": 1,
+      "gift_name": "dinosaur costume",
+      "link": "www.amazon.com/dino",
+      "price": 12.99
+		},
+    {
+			"user_id": 3,
+			"id": 4,
+      "gift_name": "comb",
+      "link": "www.hardoo.com/12121",
+      "price": 2.99
+		}
+	],
+  "notificion": [
+		{
+			"user_id": 1,
+			"id": 1,
+      "notification": "brianna has added a new item to her wishlist",
+      "connection_id": 1,
+      "read": false
+		},
+		{
+			"user_id": 1,
+			"id": 1,
+      "notification": "richard has added a new item to his wishlist",
+      "cnnection_id": 1,
+      "read": true
+		}
+  ]
+
+}
