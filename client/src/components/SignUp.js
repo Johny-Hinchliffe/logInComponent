@@ -12,20 +12,27 @@ import Container from '@mui/material/Container'
 
 import { validate } from 'email-validator'
 
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
 
-import UserContext from '../contexts/UserContext'
+import {UserContext} from '../App'
 import vars from '../vars'
 import { Copyright } from './Copyright'
 
+
+// Added notes
+//// Thank you for signing up page 
+//// Show password
+
 export default function SignUp() {
-	const { user, setUser } = useContext(UserContext)
+	const [ user, setUser ] = useContext(UserContext)
 	const [emailError, setEmailError] = useState(false)
 	const [passwordError, setPasswordError] = useState(false)
 	const [firstNameError, setFirstNameError] = useState(false)
 	const [lastNameError, setLastNameError] = useState(false)
 	const [emailExists, setEmailExists] = useState(false)
+
+	const navigate = useNavigate()
 
 	const handleSubmit = (event) => {
 		event.preventDefault()
@@ -45,44 +52,37 @@ export default function SignUp() {
 		if (emailError || passwordError || firstNameError || lastNameError) {
 			return
 		} else {
-			setUser({
-				firstName: data.get('firstName'),
-				lastName: data.get('lastName'),
-				email: data.get('email'),
-				password: data.get('password'),
-				marketing: data.get('marketing'),
-				signedUp: Date.now(),
-			})
-		}
-	}
-
-	useEffect(() => {
-		if (Object.keys(user).length === 0) {
-			return
-		} else {
 			const sendData = async (e) => {
 				const result = await (
-					await fetch('http://localhost:4000/', {
+					await fetch('http://localhost:4000/register', {
 						method: 'POST',
 						headers: {
 							'Content-Type': 'application/json',
 						},
-						body: JSON.stringify(user),
+						body: JSON.stringify({
+							firstName: data.get('firstName'),
+							lastName: data.get('lastName'),
+							email: data.get('email'),
+							password: data.get('password'),
+							marketing: data.get('marketing'),
+							signedUp: Date.now(),
+						}),
 					})
 				).json()
 
 				if (!result.error) {
 					console.log('result', result)
 					//setSubmitted(true)
-				} else {
-					if (result.error === 'User already exist') {
-						setEmailExists(true)
-					} else console.log('other error')
-				}
+				} else if (result.error === 'User already exist') {
+					setEmailExists(true)
+				} else console.log(result.error)
 			}
+
 			sendData()
+			// Thank you for making an account etc
+			navigate('/login')
 		}
-	}, [user])
+	}
 
 	return (
 		<Container component="main" maxWidth="xs">
@@ -111,11 +111,7 @@ export default function SignUp() {
 								label="First Name"
 								autoFocus
 								error={firstNameError}
-								helperText={
-									firstNameError
-										? 'Enter last name'
-										: null
-								}
+								helperText={firstNameError ? 'Enter last name' : null}
 								onChange={() => setFirstNameError(false)}
 							/>
 						</Grid>
@@ -128,11 +124,7 @@ export default function SignUp() {
 								name="lastName"
 								autoComplete="family-name"
 								error={lastNameError}
-								helperText={
-									lastNameError
-										? 'Enter first name'
-										: null
-								}
+								helperText={lastNameError ? 'Enter first name' : null}
 								onChange={() => setLastNameError(false)}
 							/>
 						</Grid>
@@ -145,12 +137,17 @@ export default function SignUp() {
 								name="email"
 								autoComplete="email"
 								error={emailError || emailExists}
-								helperText={emailError ? 'Please enter a valid email' : emailExists ? 'This email is already in use' : null}
+								helperText={
+									emailError
+										? 'Please enter a valid email'
+										: emailExists
+										? 'This email is already in use'
+										: null
+								}
 								onChange={() => {
 									setEmailError(false)
 									setEmailExists(false)
-								}
-							}
+								}}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -192,7 +189,7 @@ export default function SignUp() {
 					</Button>
 					<Grid container justifyContent="flex-end">
 						<Grid item>
-							<Link to="/sign-in" variant="body2">
+							<Link to="/login" variant="body2">
 								Already have an account? Sign in
 							</Link>
 						</Grid>

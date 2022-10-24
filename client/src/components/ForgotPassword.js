@@ -77,12 +77,12 @@ export default function ForgotPassword() {
 					</Button>
 					<Grid container>
 						<Grid item xs>
-							<MuiLink href="/sign-up" variant="body2">
+							<MuiLink href="/register" variant="body2">
 								Don't have an account?
 							</MuiLink>
 						</Grid>
 						<Grid item>
-							<Link to="/sign-in" variant="body2">
+							<Link to="/login" variant="body2">
 								Sign in?
 							</Link>
 						</Grid>

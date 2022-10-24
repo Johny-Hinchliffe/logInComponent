@@ -12,19 +12,37 @@ import Container from '@mui/material/Container'
 
 import { validate } from 'email-validator'
 
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate} from 'react-router-dom'
 import { useContext } from 'react'
 
-import UserContext from '../contexts/UserContext'
+import {UserContext} from '../App'
+
 import { Copyright } from './Copyright'
 import vars from '../vars'
 
 export default function SignIn() {
-	const { user, setUser } = useContext(UserContext)
+	const [ user, setUser ] = useContext(UserContext)
+
+
 	const [ emailError, setEmailError ] = useState(false)
 	const [ passwordError, setPasswordError ] = useState(false)
 
 	let navigate = useNavigate()
+
+	
+	useEffect(() => {
+		async function fetchProtected() {
+		  const result = await (await fetch('http://localhost:4000/', {
+			method: 'POST',
+			headers: {
+			  'Content-Type': 'application/json',
+			  authorization: `Bearer ${user.accesstoken}`,
+			},
+		  })).json();
+		  if (result.data)   console.log('logged in') //navigate('/')
+		}
+		fetchProtected();
+	  }, [])
 
 	
 
@@ -44,7 +62,7 @@ export default function SignIn() {
 
 			const sendData = async () => {
 
-				const result = await (await fetch('http://localhost:4000/sign-in', {
+				const result = await (await fetch('http://localhost:4000/login', {
 					method: 'POST',
 					credentials: 'include', // Needed to include the cookie
 					headers: {
@@ -55,6 +73,7 @@ export default function SignIn() {
 						password,
 					}),
 				})).json();
+
 				
 				if (result.accesstoken) {
 					console.log('access token', result.accesstoken)
@@ -63,6 +82,7 @@ export default function SignIn() {
 					});
 					return navigate("/")
 				} else {
+					console.log(result.error)
 					console.log('error', result.error);
 				}
 			}
@@ -147,7 +167,7 @@ export default function SignIn() {
 							</Link>
 						</Grid>
 						<Grid item>
-							<Link to="/sign-up" variant="body2">
+							<Link to="/register" variant="body2">
 								{"Don't have an account? Sign Up"}
 							</Link>
 						</Grid>

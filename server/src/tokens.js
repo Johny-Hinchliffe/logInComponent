@@ -27,6 +27,7 @@ const sendRefreshToken = (res, token) => {
   res.cookie('refreshtoken', token, {
     httpOnly: true,
     path: '/refresh_token',
+    sameSite: 'lax'
   });
 };
 

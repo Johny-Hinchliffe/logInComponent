@@ -21,6 +21,22 @@ const vars = {
         src={vslLogo}
       />
 	),
+  //logo: vslLogo,
+  loadLogo: (
+		<Box
+        component="img"
+        sx={{
+          height: 150,
+         justifySelf: 'center',
+         alignSelf: 'center',
+          maxHeight: { xs: 150, md: 200 },
+      
+		  mb: 5
+        }}
+        alt="Vanguard Sevices Limited Logo"
+        src={vslLogo}
+      />
+	),
 }
 
 export default vars
