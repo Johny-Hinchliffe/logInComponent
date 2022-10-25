@@ -1,5 +1,5 @@
 Client fixes
--
+- Fix checking for false login
 
 
 
@@ -12,3 +12,4 @@ Server Fixes
 
 Todo
 - Make a homepage landing page with login / logout option
+- Remember me?

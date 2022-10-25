@@ -28,7 +28,6 @@ server.use(
 	cors({
 		origin: 'http://localhost:3000',
 		credentials: true,
-		
 	})
 )
 
@@ -57,8 +56,6 @@ server.post('/register', async (req, res) => {
 		const hashedPassword = await hash(password, 10)
 
 		const newCustomer = await pool.query(
-			// 'INSERT INTO client (first_name, last_name, email, password, marketing, sign_up_date) VALUES($1, $2, $3, $4, $5, $6) RETURNING *',
-			// [firstName, lastName, email, hashedPassword, marketing, signedUp]
 			`INSERT INTO ${process.env.USER} (first_name, last_name, email, password, marketing, sign_up_date) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
 			[firstName, lastName, email, hashedPassword, marketing, signedUp]
 		)
@@ -70,8 +67,6 @@ server.post('/register', async (req, res) => {
 		})
 	}
 })
-
-// Work out how remember me works
 
 // 2. Login a user
 server.post('/login', async (req, res) => {
@@ -118,16 +113,27 @@ server.post('/login', async (req, res) => {
 
 // 3. Logout a user
 server.post('/logout', async (_req, res) => {
-	console.log('run')
-	res.clearCookie('refreshtoken', { path: '/refresh_token' })
-	// Logic here for also remove refreshtoken from pool
-	// await pool.query('UPDATE practice SET refreshtoken = null WHERE refreshtoken=$1;', [
-	//   refreshtoken
-	// ])
+	;('run')
 
-	return res.send({
-		message: 'Logged out',
-	})
+	try{
+
+		res.clearCookie('refreshtoken', { path: '/refresh_token' })
+		// Logic here for also remove refreshtoken from pool
+		// await pool.query(`UPDATE ${process.env.USER} SET refreshtoken = null WHERE refreshtoken=$1;`, [
+			//   refreshtoken
+			// ])
+			
+			
+			return res.send({
+				message: 'Logged out',
+			})
+		}catch (err) {
+			res.send({
+				error: `${err.message}`,
+			})
+		}
+	  
+	
 })
 
 // 4. Protected route
@@ -149,6 +155,9 @@ server.post('/', async (req, res) => {
 // 5. Get a new access token with a refresh token
 server.post('/refresh_token', async (req, res) => {
 	const token = req.cookies.refreshtoken
+
+	console.log('REFRESH TOKEN', token)
+
 	// If we don't have a token in our request
 	if (!token) return res.send({ accesstoken: '' })
 	// We have a token, let's verify it!
@@ -190,6 +199,7 @@ server.post('/refresh_token', async (req, res) => {
 	return res.send({ accesstoken })
 })
 
-server.listen(process.env.PORT, () =>
-	console.log(`Server listening on port ${process.env.PORT}!`)
+server.listen(
+	process.env.PORT,
+	() => `Server listening on port ${process.env.PORT}!`
 )

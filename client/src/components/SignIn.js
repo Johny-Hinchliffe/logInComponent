@@ -12,39 +12,44 @@ import Container from '@mui/material/Container'
 
 import { validate } from 'email-validator'
 
-import { Link, useNavigate} from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
 
-import {UserContext} from '../App'
+import { UserContext } from '../App'
 
 import { Copyright } from './Copyright'
 import vars from '../vars'
 
 export default function SignIn() {
-	const [ user, setUser ] = useContext(UserContext)
+	const [user, setUser] = useContext(UserContext)
 
-
-	const [ emailError, setEmailError ] = useState(false)
-	const [ passwordError, setPasswordError ] = useState(false)
+	const [emailError, setEmailError] = useState(false)
+	const [passwordError, setPasswordError] = useState(false)
+	const [wrongDetails, setWrongDetails] = useState(false)
+	const [loggedIn, setLoggedIn] = useState(true)
 
 	let navigate = useNavigate()
 
-	
 	useEffect(() => {
 		async function fetchProtected() {
-		  const result = await (await fetch('http://localhost:4000/', {
-			method: 'POST',
-			headers: {
-			  'Content-Type': 'application/json',
-			  authorization: `Bearer ${user.accesstoken}`,
-			},
-		  })).json();
-		  if (result.data)   console.log('logged in') //navigate('/')
+			const result = await (
+				await fetch('http://localhost:4000/', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						authorization: `Bearer ${user.accesstoken}`,
+					},
+				})
+			).json()
+			if (result.data) {
+				navigate('/')
+				setLoggedIn(true)
+			} else setLoggedIn(false)
 		}
-		fetchProtected();
-	  }, [])
+		fetchProtected()
+	}, [])
 
-	
+	if(user.accesstoken) navigate('/')
 
 	const handleSubmit = (event) => {
 		event.preventDefault()
@@ -56,52 +61,48 @@ export default function SignIn() {
 		if (emailError || passwordError) {
 			return
 		} else {
-
 			const email = data.get('email')
 			const password = data.get('password')
 
 			const sendData = async () => {
+				const result = await (
+					await fetch('http://localhost:4000/login', {
+						method: 'POST',
+						credentials: 'include', // Needed to include the cookie
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({
+							email,
+							password,
+						}),
+					})
+				).json()
 
-				const result = await (await fetch('http://localhost:4000/login', {
-					method: 'POST',
-					credentials: 'include', // Needed to include the cookie
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						email,
-						password,
-					}),
-				})).json();
-
-				
 				if (result.accesstoken) {
-					console.log('access token', result.accesstoken)
 					setUser({
 						accesstoken: result.accesstoken,
-					});
-					return navigate("/")
-				} else {
-					console.log(result.error)
-					console.log('error', result.error);
-				}
+					})
+					// return navigate('/')
+				} else if (
+					result.error === 'User does not exist' ||
+					result.error === 'Password not correct'
+				) {
+					setWrongDetails(true)
+				} else console.log('uncontrolled error', result.error)
 			}
-			 
-				sendData()
 
-				console.log(user)
-
-
-
+			sendData()
 
 			// setUser( {
 			// 	email: data.get('email'),
 			// 	password: data.get('password'),
 			// 	remember: data.get('remember'),
 			// })
-		
 		}
 	}
+
+	if (loggedIn) return <div></div>
 
 	return (
 		<Container component="main" maxWidth="xs">
@@ -128,10 +129,18 @@ export default function SignIn() {
 						name="email"
 						autoComplete="email"
 						autoFocus
-						error={emailError}
-						helperText={emailError ? 'Please enter a valid email' : null}
-						onChange={() => setEmailError(false)}
-
+						error={emailError || wrongDetails}
+						helperText={
+							emailError
+								? 'Please enter a valid email'
+								: wrongDetails
+								? 'Email or Password is incorrect'
+								: null
+						}
+						onChange={() => {
+							setWrongDetails(false)	
+							setEmailError(false)
+						}}
 					/>
 					<TextField
 						margin="normal"
@@ -142,9 +151,18 @@ export default function SignIn() {
 						type="password"
 						id="password"
 						autoComplete="current-password"
-						error={passwordError}
-						helperText={passwordError ? 'Password must be atleast 8 characters' : null}
-						onChange={() => setPasswordError(false)}
+						error={passwordError || wrongDetails}
+						helperText={
+							passwordError
+								? 'Password must be atleast 8 characters'
+								: wrongDetails
+								? 'Email or Password is incorrect'
+								: null
+						}
+						onChange={() => {
+							setWrongDetails(false)
+							setPasswordError(false)
+						}}
 					/>
 					<FormControlLabel
 						control={

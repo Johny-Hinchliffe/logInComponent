@@ -5,7 +5,7 @@ import vslLogo from './images/vsl-logo.png'
 
 
 const vars = {
-	websiteLink: 'https://mui.com/',
+	websiteLink: 'https://google.com/',
 	websiteName: 'Your Website',
 	signLogo: (
 		<Box

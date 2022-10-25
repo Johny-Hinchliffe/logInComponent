@@ -9,8 +9,9 @@ const createAccessToken = userId => {
 };
 
 const createRefreshToken = userId => {
+  console.log('-----------CREATED REFRESH')
   return sign({ userId }, process.env.REFRESH_TOKEN_SECRET, {
-    expiresIn: '7d',
+    expiresIn: '3d',
   });
 };
 

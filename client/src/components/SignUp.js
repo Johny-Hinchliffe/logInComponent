@@ -71,16 +71,18 @@ export default function SignUp() {
 				).json()
 
 				if (!result.error) {
-					console.log('result', result)
+					
+					navigate('/login')
 					//setSubmitted(true)
 				} else if (result.error === 'User already exist') {
+					
 					setEmailExists(true)
-				} else console.log(result.error)
+				} else  console.log(result.error)
 			}
 
 			sendData()
 			// Thank you for making an account etc
-			navigate('/login')
+			
 		}
 	}
 

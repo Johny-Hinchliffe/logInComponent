@@ -12,27 +12,25 @@ import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
 
-import { useNavigate } from 'react-router-dom'
-import { useContext, useState, useEffect } from 'react'
+import { useNavigate, useEffect } from 'react-router-dom'
+import { useContext, useState } from 'react'
 import { UserContext } from '../App'
 
 import vars from '../vars'
 
 const pagesLoggedIn = ['Products', 'Pricing', 'Blog']
 
-const settingsLoggedIn = ['Profile', 'Account', 'Dashboard', 'Logout']
-const settingsLoggedOut = ['Login']
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
 
 function ResponsiveAppBar() {
 	const [user, setUser] = useContext(UserContext)
 	const [anchorElNav, setAnchorElNav] = useState(null)
 	const [anchorElUser, setAnchorElUser] = useState(null)
-	const [settings, setSettings] = useState(settingsLoggedOut)
 
 	const navigate = useNavigate()
 
 	const LogOutCallback = async () => {
-		await fetch('http://localhost:4000/logout', {
+		const result = await fetch('http://localhost:4000/logout', {
 			method: 'POST',
 			credentials: 'include', // Needed to include the cookie
 		})
@@ -41,14 +39,11 @@ function ResponsiveAppBar() {
 		// Navigate back to startpage
 		navigate('/')
 		window.location.reload()
-	}
 
-	useEffect(() => {
-		user.accesstoken
-			? setSettings(settingsLoggedIn)
-			: setSettings(settingsLoggedOut)
-		console.log(user.accesstoken)
-	}, [user])
+    if(result.error) console.log(result.error)
+
+    
+	}
 
 	const handleOpenNavMenu = (event) => {
 		setAnchorElNav(event.currentTarget)
@@ -69,15 +64,17 @@ function ResponsiveAppBar() {
 		if (el === 'Logout') {
 			LogOutCallback()
 		}
-		if (el === 'Login') {
-			navigate('/login')
-      window.location.reload()
-
-		}
 	}
 
+	const hideButton =
+		window.location.pathname === '/login' ||
+		window.location.pathname === '/register' ||
+		window.location.pathname === '/forogot-password'
+
+  
+
 	return (
-		<AppBar position="static">
+		<AppBar position="static" sx={{margin:'0px'}}>
 			<Container maxWidth="xl">
 				<Toolbar disableGutters>
 					<AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -187,40 +184,50 @@ function ResponsiveAppBar() {
 							: null}
 					</Box>
 
-					<Box sx={{ flexGrow: 0 }}>
-						<Tooltip title="Open settings">
-							<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-								<Avatar alt="" src="/static/images/avatar/2.jpg" />
-							</IconButton>
-						</Tooltip>
-						<Menu
-							sx={{ mt: '45px' }}
-							id="menu-appbar"
-							anchorEl={anchorElUser}
-							anchorOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
-							keepMounted
-							transformOrigin={{
-								vertical: 'top',
-								horizontal: 'right',
-							}}
-							open={Boolean(anchorElUser)}
-							onClose={handleCloseUserMenu}
+					{user.accesstoken ? (
+						<Box sx={{ flexGrow: 0 }}>
+							<Tooltip title="Open settings">
+								<IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+									<Avatar alt="" src="/static/images/avatar/2.jpg" />
+								</IconButton>
+							</Tooltip>
+							<Menu
+								sx={{ mt: '45px' }}
+								id="menu-appbar"
+								anchorEl={anchorElUser}
+								anchorOrigin={{
+									vertical: 'top',
+									horizontal: 'right',
+								}}
+								keepMounted
+								transformOrigin={{
+									vertical: 'top',
+									horizontal: 'right',
+								}}
+								open={Boolean(anchorElUser)}
+								onClose={handleCloseUserMenu}
+							>
+								{settings.map((setting) => (
+									<MenuItem key={setting} onClick={handleCloseUserMenu}>
+										<Typography
+											onClick={() => avatarClick(setting)}
+											textAlign="center"
+										>
+											{setting}
+										</Typography>
+									</MenuItem>
+								))}
+							</Menu>
+						</Box>
+					) : hideButton ? null : (
+						<Button
+							onClick={() => navigate('/login')}
+							variant="text"
+							sx={{ color: 'white' }}
 						>
-							{settings.map((setting) => (
-								<MenuItem key={setting} onClick={handleCloseUserMenu}>
-									<Typography
-										onClick={() => avatarClick(setting)}
-										textAlign="center"
-									>
-										{setting}
-									</Typography>
-								</MenuItem>
-							))}
-						</Menu>
-					</Box>
+							Sign in
+						</Button>
+					)}
 				</Toolbar>
 			</Container>
 		</AppBar>
